@@ -6,43 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:padding="16dp"
+    android:background="#ecf0f1"
     tools:context="com.example.dp3akbpenjadwalan.MainActivity">
 
     <!-- logo -->
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="171dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="67dp"
-        app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="150dp"
         android:text="Masuk"
-        android:textColor="#FF66B2"
-        android:textSize="22dp"
+        android:textColor="#2c3e50"
+        android:textSize="28dp"
         android:textStyle="bold" />
 
     <!-- input email -->
     <EditText
-        android:id="@+id/editTextTextEmailAddress2"
+        android:id="@+id/editTextEmailAddress"
         android:layout_width="307dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="Email"
-        android:layout_marginTop="60dp"/>
+        android:layout_marginTop="100dp"/>
 
     <!-- input password -->
     <EditText
-        android:id="@+id/editTextTextPassword2"
+        android:id="@+id/editTextPassword"
         android:layout_width="307dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -51,13 +45,23 @@
         android:hint="Kata sandi"
         android:layout_marginTop="30dp"/>
 
+    <CheckBox
+        android:id="@+id/cb_show_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tampilkan Password"
+        android:textColor="#246455"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_gravity="left"/>
+
     <!-- lupa password -->
     <TextView
         android:id="@+id/textForgetPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lupa kata sandi?"
-        android:textColor="#EB2768"
+        android:textColor="#1863D1"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:clickable="true"
@@ -71,9 +75,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:layout_gravity="center"
-        android:backgroundTint="#F4CFF4"
+        android:backgroundTint="#2c3e50"
         android:text="Masuk"
-        android:textColor="#575454"
+        android:textColor="#ecf0f1"
         android:textSize="16dp"
         android:textStyle="bold"  />
 
@@ -103,7 +107,7 @@
             android:layout_marginTop="30dp"
             android:layout_weight="1"
             android:text="Daftar"
-            android:textColor="#EB2768"
+            android:textColor="#1863D1"
             android:textSize="14dp" />
     </LinearLayout>
 

@@ -1,6 +1,14 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
+    alias(libs.plugins.google.gms.google.services)
+}
+
+android {
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 android {
@@ -26,23 +34,37 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
 }
 
 dependencies {
-
+    // AndroidX dan UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // RecyclerView & CardView
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+
+    // Firebase Auth (opsional, jika pakai login)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+
+    // Unit Test
     testImplementation(libs.junit)
+
+    // Android Instrumentation Test
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

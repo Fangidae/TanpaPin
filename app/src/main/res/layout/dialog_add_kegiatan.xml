@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#D7FAF1"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Judul -->
+        <TextView
+            android:text="Judul Kegiatan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etJudul"
+            android:hint="Masukkan judul kegiatan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:imeOptions="actionNext" />
+
+        <!-- Deskripsi -->
+        <TextView
+            android:text="Deskripsi"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etDeskripsi"
+            android:hint="Tulis deskripsi kegiatan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top|start"
+            android:imeOptions="actionNext" />
+
+        <!-- Tempat -->
+        <TextView
+            android:text="Tempat"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etTempat"
+            android:hint="Masukkan lokasi kegiatan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:imeOptions="actionNext" />
+
+        <!-- Tanggal -->
+        <TextView
+            android:text="Tanggal"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etTanggal"
+            android:hint="Pilih tanggal"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Waktu -->
+        <TextView
+            android:text="Waktu"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etWaktu"
+            android:hint="Pilih waktu"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Kategori -->
+        <TextView
+            android:text="Kategori"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <Spinner
+            android:id="@+id/spinnerKategori"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>
