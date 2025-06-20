@@ -32,6 +32,7 @@
             android:paddingTop="3dp"
             android:paddingBottom="1dp">
 
+         <!---reset kalender -->
             <Button
                 android:id="@+id/btnResetFilter"
                 android:layout_width="wrap_content"

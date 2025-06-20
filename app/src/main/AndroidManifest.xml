@@ -13,6 +13,18 @@
         android:theme="@style/Theme.DP3AKBPENJADWALAN"
         tools:targetApi="31">
         <activity
+            android:name=".TampilanDepanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PengaturanPegawaiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PengaturanAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardPegawaiActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetailActivity"
             android:exported="false" />
         <activity

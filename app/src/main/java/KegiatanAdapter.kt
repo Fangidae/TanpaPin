@@ -1,6 +1,5 @@
 package com.example.dp3akbpenjadwalan
 
-import KegiatanModel
 import android.app.AlertDialog
 import android.content.Context
 import android.view.*
@@ -9,6 +8,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dp3akbpenjadwalan.model.KegiatanModel
 
 class KegiatanAdapter(
     private val context: Context,
@@ -46,7 +46,6 @@ class KegiatanAdapter(
                             onEditClick(item)
                             true
                         }
-
                         R.id.menu_delete -> {
                             AlertDialog.Builder(context)
                                 .setTitle("Hapus Kegiatan")
@@ -59,7 +58,6 @@ class KegiatanAdapter(
                                 .show()
                             true
                         }
-
                         else -> false
                     }
                 }

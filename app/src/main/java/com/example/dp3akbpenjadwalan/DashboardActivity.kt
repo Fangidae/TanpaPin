@@ -1,6 +1,5 @@
 package com.example.dp3akbpenjadwalan
-
-import KegiatanModel
+import com.example.dp3akbpenjadwalan.model.KegiatanModel
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent

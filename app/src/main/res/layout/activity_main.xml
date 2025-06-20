@@ -17,103 +17,146 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="150dp"
-        android:text="Masuk"
+        android:layout_marginTop="50dp"
+        android:text="Login"
         android:textColor="#2c3e50"
-        android:textSize="28dp"
+        android:textSize="32sp"
         android:textStyle="bold" />
 
     <!-- input email -->
-    <EditText
-        android:id="@+id/editTextEmailAddress"
-        android:layout_width="307dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:hint="Email"
-        android:layout_marginTop="100dp"/>
-
-    <!-- input password -->
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="307dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_gravity="center"
-        android:inputType="textPassword"
-        android:hint="Kata sandi"
-        android:layout_marginTop="30dp"/>
-
-    <CheckBox
-        android:id="@+id/cb_show_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tampilkan Password"
-        android:textColor="#246455"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="25dp"
-        android:layout_gravity="left"/>
-
-    <!-- lupa password -->
-    <TextView
-        android:id="@+id/textForgetPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lupa kata sandi?"
-        android:textColor="#1863D1"
-        android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:clickable="true"
-        android:focusable="true" />
-
-
-    <!-- tombol login -->
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_gravity="center"
-        android:backgroundTint="#2c3e50"
-        android:text="Masuk"
-        android:textColor="#ecf0f1"
-        android:textSize="16dp"
-        android:textStyle="bold"  />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="80dp">
 
-        <!-- belum punya akun? -->
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="160dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="50dp"
-            android:gravity="right"
-            android:text="Belum punya akun?"
-            android:textSize="14dp"
-            android:textStyle="bold"/>
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="#2c3e50"
+            app:boxBackgroundColor="#FFFFFF"
+            android:hint="Email">
 
-        <!-- register -->
-        <TextView
-            android:id="@+id/textRegister"
-            android:layout_width="24dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- input password with toggle eye icon -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="30dp"
-            android:layout_weight="1"
-            android:text="Daftar"
+            android:layout_marginTop="10dp"
+            app:endIconMode="password_toggle"
+            app:endIconTint="#2c3e50"
+            app:boxStrokeColor="#2c3e50"
+            app:boxBackgroundMode="filled"
+            android:hint="Kata Sandi">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroupPilihan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Kabid PP" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Kabid PPA" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Kabid PUG" />
+
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Kabid KB" />
+
+            <RadioButton
+                android:id="@+id/radioButton5"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Kabid UPTD" />
+        </RadioGroup>
+
+        <!-- tombol login -->
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#2c3e50"
+            android:text="Login"
+            android:textColor="#ecf0f1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- lupa password -->
+        <TextView
+            android:id="@+id/textForgetPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lupa kata sandi?"
             android:textColor="#1863D1"
-            android:textSize="14dp" />
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <!-- belum punya akun? -->
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="30dp"
+                android:text="Belum punya akun?"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- register -->
+            <TextView
+                android:id="@+id/textRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="30dp"
+                android:text="Daftar"
+                android:textColor="#1863D1"
+                android:textSize="14sp" />
+        </LinearLayout>
     </LinearLayout>
-
-
 </LinearLayout>
-
-
-
-

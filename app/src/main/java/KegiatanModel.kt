@@ -1,3 +1,5 @@
+package com.example.dp3akbpenjadwalan.model
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
