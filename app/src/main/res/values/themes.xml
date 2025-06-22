@@ -1,9 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Base application theme. -->
-    <style name="Base.Theme.DP3AKBPENJADWALAN" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.DP3AKBPENJADWALAN" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Tambahkan ini untuk menu popup -->
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="Theme.DP3AKBPENJADWALAN" parent="Base.Theme.DP3AKBPENJADWALAN" />
+
+    <!-- Tambahkan ini di bawahnya -->
+    <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
 </resources>

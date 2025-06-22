@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_search"
+        android:title="Cari"
+        android:icon="@android:drawable/ic_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView"
+        app:iconTint="@color/black" />
 
     <item
         android:id="@+id/menu_notifikasi"
         android:icon="@drawable/ic_notif"
         android:title="Notifikasi"
-        android:showAsAction="always" />
+        app:showAsAction="always"
+        app:iconTint="@color/black"/>
+
 
     <item
         android:id="@+id/menu_riwayat"
         android:title="Riwayat Kegiatan"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_logout"
         android:title="Pengaturan"
-        android:showAsAction="never" />
-
+        app:showAsAction="never" />
 </menu>
