@@ -2,9 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_edit"
-        android:title="Pengaturan"/>
+        android:id="@+id/menu_notifikasi"
+        android:icon="@drawable/ic_notif"
+        android:title="Notifikasi"
+        android:showAsAction="always" />
+
     <item
-        android:id="@+id/menu_delete"
-        android:title="Riwayat kegiatan"/>
+        android:id="@+id/menu_riwayat"
+        android:title="Riwayat Kegiatan"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Pengaturan"
+        android:showAsAction="never" />
+
 </menu>

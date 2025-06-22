@@ -1,16 +1,19 @@
 package com.example.dp3akbpenjadwalan
-import com.example.dp3akbpenjadwalan.model.KegiatanModel
+
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dp3akbpenjadwalan.model.KegiatanModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,6 +34,8 @@ class DashboardActivity : AppCompatActivity() {
     private var selectedDateFilter: String? = null
     private var searchQueryFilter: String? = null
 
+    private var userRole: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -38,32 +43,36 @@ class DashboardActivity : AppCompatActivity() {
         kegiatanList = arrayListOf()
         allKegiatanList = arrayListOf()
 
-        adapter = KegiatanAdapter(
-            context = this,
-            list = kegiatanList,
-            onItemClick = { kegiatan ->
-                val intent = Intent(this, DetailActivity::class.java).apply {
-                    putExtra("judul", kegiatan.judul)
-                    putExtra("deskripsi", kegiatan.deskripsi)
-                    putExtra("tempat", kegiatan.tempat)
-                    putExtra("tanggal", kegiatan.tanggal)
-                    putExtra("waktu", kegiatan.waktu)
-                    putExtra("kategori", kegiatan.kategori)
-                }
-                startActivity(intent)
-            },
-            onEditClick = { kegiatan -> showAddKegiatanDialog(true, kegiatan) },
-            onDeleteClick = { deleteKegiatan(it) }
-        )
-
         initViews()
-        loadDataFromFirestore()
+        checkUserRole()
+    }
+    
+    // Tampilkan menu titik tiga
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_admin, menu)
+        return true
+    }
+
+    // Tangani klik pada menu
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_edit -> {
+                // Arahkan ke halaman pengaturan atau edit profil
+                startActivity(Intent(this, PengaturanAdminActivity::class.java))
+                true
+            }
+            R.id.menu_delete -> {
+                // Arahkan ke halaman riwayat kegiatan
+                startActivity(Intent(this, RiwayatadminActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun initViews() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
 
         fabAdd = findViewById(R.id.fabAdd)
         calendarView = findViewById(R.id.calendarView)
@@ -100,6 +109,52 @@ class DashboardActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun checkUserRole() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userDocRef = FirebaseFirestore.getInstance().collection("users").document(uid)
+
+        userDocRef.get()
+            .addOnSuccessListener { document ->
+                userRole = document.getString("role")
+                if (userRole == "user") {
+                    fabAdd.hide()
+                }
+                setupAdapter()
+                loadDataFromFirestore()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal memuat data role", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun setupAdapter() {
+        val editClick: ((KegiatanModel) -> Unit)? =
+            if (userRole == "admin") { { kegiatan -> showAddKegiatanDialog(true, kegiatan) } } else null
+
+        val deleteClick: ((KegiatanModel) -> Unit)? =
+            if (userRole == "admin") { { kegiatan -> deleteKegiatan(kegiatan) } } else null
+
+        adapter = KegiatanAdapter(
+            context = this,
+            list = kegiatanList,
+            onItemClick = { kegiatan ->
+                val intent = Intent(this, DetailActivity::class.java).apply {
+                    putExtra("judul", kegiatan.judul)
+                    putExtra("deskripsi", kegiatan.deskripsi)
+                    putExtra("tempat", kegiatan.tempat)
+                    putExtra("tanggal", kegiatan.tanggal)
+                    putExtra("waktu", kegiatan.waktu)
+                    putExtra("kategori", kegiatan.kategori)
+                }
+                startActivity(intent)
+            },
+            onEditClick = editClick,
+            onDeleteClick = deleteClick
+        )
+        recyclerView.adapter = adapter
+    }
+
 
     private fun loadDataFromFirestore() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return

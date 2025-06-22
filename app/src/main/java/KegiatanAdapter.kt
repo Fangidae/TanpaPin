@@ -14,8 +14,8 @@ class KegiatanAdapter(
     private val context: Context,
     private val list: List<KegiatanModel>,
     private val onItemClick: (KegiatanModel) -> Unit,
-    private val onEditClick: (KegiatanModel) -> Unit,
-    private val onDeleteClick: (KegiatanModel) -> Unit
+    private val onEditClick: ((KegiatanModel) -> Unit)? = null,
+    private val onDeleteClick: ((KegiatanModel) -> Unit)? = null
 ) : RecyclerView.Adapter<KegiatanAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,7 +43,7 @@ class KegiatanAdapter(
                 popup.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.menu_edit -> {
-                            onEditClick(item)
+                            onEditClick?.invoke(item)
                             true
                         }
                         R.id.menu_delete -> {
@@ -51,7 +51,7 @@ class KegiatanAdapter(
                                 .setTitle("Hapus Kegiatan")
                                 .setMessage("Yakin ingin menghapus kegiatan ini?")
                                 .setPositiveButton("Hapus") { _, _ ->
-                                    onDeleteClick(item)
+                                    onDeleteClick?.invoke(item)
                                     Toast.makeText(context, "Kegiatan dihapus", Toast.LENGTH_SHORT).show()
                                 }
                                 .setNegativeButton("Batal", null)
