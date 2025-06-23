@@ -219,33 +219,55 @@ class DashboardActivity : AppCompatActivity() {
         val etTempat = dialogView.findViewById<EditText>(R.id.etTempat)
         val etTanggal = dialogView.findViewById<EditText>(R.id.etTanggal)
         val etWaktu = dialogView.findViewById<EditText>(R.id.etWaktu)
-        val etKategori = dialogView.findViewById<EditText>(R.id.spinnerKategori)
+        val spinnerKategori = dialogView.findViewById<Spinner>(R.id.spinnerKategori)
 
+        // Siapkan daftar kategori
+        val kategoriList = arrayOf("Kegiatan Rutin", "Rapat", "Pelatihan", "Kunjungan")
+        val kategoriAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kategoriList)
+        spinnerKategori.adapter = kategoriAdapter
+
+        // Jika sedang edit, isi field dengan data kegiatan
         if (isEdit && kegiatan != null) {
             etJudul.setText(kegiatan.judul)
             etDeskripsi.setText(kegiatan.deskripsi)
             etTempat.setText(kegiatan.tempat)
             etTanggal.setText(kegiatan.tanggal)
             etWaktu.setText(kegiatan.waktu)
-            etKategori.setText(kegiatan.kategori)
+            val selectedIndex = kategoriList.indexOf(kegiatan.kategori)
+            if (selectedIndex >= 0) spinnerKategori.setSelection(selectedIndex)
         }
 
+        // Date picker untuk tanggal
         etTanggal.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val datePicker = DatePickerDialog(this, { _, year, month, day ->
-                etTanggal.setText(String.format("%02d/%02d/%d", day, month + 1, year))
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, day ->
+                    etTanggal.setText(String.format("%02d/%02d/%d", day, month + 1, year))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
             datePicker.show()
         }
 
+        // Time picker untuk waktu
         etWaktu.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val timePicker = TimePickerDialog(this, { _, hour, minute ->
-                etWaktu.setText(String.format("%02d:%02d", hour, minute))
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true)
+            val timePicker = TimePickerDialog(
+                this,
+                { _, hour, minute ->
+                    etWaktu.setText(String.format("%02d:%02d", hour, minute))
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            )
             timePicker.show()
         }
 
+        // Buat dialog
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setTitle(if (isEdit) "Edit Kegiatan" else "Tambah Kegiatan")
@@ -261,9 +283,12 @@ class DashboardActivity : AppCompatActivity() {
                 val tempat = etTempat.text.toString().trim()
                 val tanggal = etTanggal.text.toString().trim()
                 val waktu = etWaktu.text.toString().trim()
-                val kategori = etKategori.text.toString().trim()
+                val kategori = spinnerKategori.selectedItem.toString().trim()
 
-                if (judul.isEmpty() || deskripsi.isEmpty() || tempat.isEmpty() || tanggal.isEmpty() || waktu.isEmpty() || kategori.isEmpty()) {
+                // Validasi
+                if (judul.isEmpty() || deskripsi.isEmpty() || tempat.isEmpty() ||
+                    tanggal.isEmpty() || waktu.isEmpty() || kategori.isEmpty()
+                ) {
                     Toast.makeText(this, "Semua kolom harus diisi", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
@@ -288,6 +313,9 @@ class DashboardActivity : AppCompatActivity() {
                             loadDataFromFirestore()
                             dialog.dismiss()
                         }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal memperbarui kegiatan", Toast.LENGTH_SHORT).show()
+                        }
                 } else {
                     firestore.collection("users").document(uid)
                         .collection("kegiatan").add(kegiatanData)
@@ -295,6 +323,9 @@ class DashboardActivity : AppCompatActivity() {
                             Toast.makeText(this, "Kegiatan ditambahkan", Toast.LENGTH_SHORT).show()
                             loadDataFromFirestore()
                             dialog.dismiss()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal menambahkan kegiatan", Toast.LENGTH_SHORT).show()
                         }
                 }
             }

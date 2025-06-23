@@ -20,7 +20,6 @@
         android:contentDescription="Logo Sepakat"
         app:srcCompat="@drawable/logo_sepakat" />
 
-    <!-- Tombol 1 -->
     <Button
         android:id="@+id/btn_admin"
         android:layout_width="match_parent"
@@ -30,7 +29,6 @@
         android:textColor="#FFFFFF"
         android:backgroundTint="#174C7F" />
 
-    <!-- Tombol 2 -->
     <Button
         android:id="@+id/btn_pegawai"
         android:layout_width="match_parent"
