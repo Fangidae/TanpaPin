@@ -1,22 +1,26 @@
 package com.example.dp3akbpenjadwalan
 
+import KegiatanModel
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dp3akbpenjadwalan.model.KegiatanModel
+
 
 class KegiatanAdapter(
     private val context: Context,
     private val list: List<KegiatanModel>,
     private val onItemClick: (KegiatanModel) -> Unit,
     private val onEditClick: ((KegiatanModel) -> Unit)? = null,
-    private val onDeleteClick: ((KegiatanModel) -> Unit)? = null
+    private val onDeleteClick: ((KegiatanModel) -> Unit)? = null,
+    private val role: String // Tambahkan ini
 ) : RecyclerView.Adapter<KegiatanAdapter.ViewHolder>() {
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val judul = itemView.findViewById<TextView>(R.id.tvJudul)
@@ -28,6 +32,8 @@ class KegiatanAdapter(
         private val ivMenu = itemView.findViewById<ImageView>(R.id.ivMenu)
 
         fun bind(item: KegiatanModel) {
+            Log.d("KegiatanAdapter", "Role: $role")
+
             judul.text = item.judul
             deskripsi.text = item.deskripsi
             tempat.text = item.tempat
@@ -37,33 +43,40 @@ class KegiatanAdapter(
 
             itemView.setOnClickListener { onItemClick(item) }
 
-            ivMenu.setOnClickListener { v ->
-                val popup = PopupMenu(context, v)
-                popup.inflate(R.menu.menu_card_item)
-                popup.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.menu_edit -> {
-                            onEditClick?.invoke(item)
-                            true
+            // Hanya tampilkan menu jika rolenya admin
+            if (role == "admin") {
+                ivMenu.visibility = View.VISIBLE
+                ivMenu.setOnClickListener { v ->
+                    val popup = PopupMenu(context, v)
+                    popup.inflate(R.menu.menu_card_item)
+                    popup.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menu_edit -> {
+                                onEditClick?.invoke(item)
+                                true
+                            }
+                            R.id.menu_delete -> {
+                                AlertDialog.Builder(context)
+                                    .setTitle("Hapus Kegiatan")
+                                    .setMessage("Yakin ingin menghapus kegiatan ini?")
+                                    .setPositiveButton("Hapus") { _, _ ->
+                                        onDeleteClick?.invoke(item)
+                                        Toast.makeText(context, "Kegiatan dihapus", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .setNegativeButton("Batal", null)
+                                    .show()
+                                true
+                            }
+                            else -> false
                         }
-                        R.id.menu_delete -> {
-                            AlertDialog.Builder(context)
-                                .setTitle("Hapus Kegiatan")
-                                .setMessage("Yakin ingin menghapus kegiatan ini?")
-                                .setPositiveButton("Hapus") { _, _ ->
-                                    onDeleteClick?.invoke(item)
-                                    Toast.makeText(context, "Kegiatan dihapus", Toast.LENGTH_SHORT).show()
-                                }
-                                .setNegativeButton("Batal", null)
-                                .show()
-                            true
-                        }
-                        else -> false
                     }
+                    popup.show()
                 }
-                popup.show()
+            } else {
+                ivMenu.visibility = View.GONE
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,6 +87,8 @@ class KegiatanAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(list[position])
+        Log.d("KegiatanAdapter", "Role di onBindViewHolder: $role")
+
     }
 
     override fun getItemCount(): Int = list.size

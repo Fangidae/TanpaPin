@@ -15,10 +15,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
+
+        val sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        val currentUser = auth.currentUser
+
+        if (isLoggedIn && currentUser != null) {
+            // User masih login, langsung ke dashboard
+            startActivity(Intent(this, DashboardActivity::class.java))
+            finish()
+            return
+        }
+
+        // Tampilkan halaman login
+        setContentView(R.layout.activity_main)
 
         val emailEditText = findViewById<EditText>(R.id.editTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextPassword)
@@ -57,33 +70,28 @@ class MainActivity : AppCompatActivity() {
 
             val selectedRole = findViewById<RadioButton>(selectedRoleId).text.toString()
 
-            // Login dengan FirebaseAuth
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
 
-                        // Ambil data user dari Firestore
                         firestore.collection("users").document(userId)
                             .get()
                             .addOnSuccessListener { document ->
-                                if (document != null && document.exists()) {
-                                    val storedRole = document.getString("role")
-                                    if (storedRole == selectedRole) {
-                                        // Role cocok, lanjut ke Dashboard
-                                        Toast.makeText(this, "Login berhasil sebagai $storedRole", Toast.LENGTH_SHORT).show()
-                                        val intent = Intent(this, DashboardActivity::class.java)
-                                        intent.putExtra("ROLE", storedRole)
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
-                                        // Role tidak sesuai, logout
-                                        auth.signOut()
-                                        Toast.makeText(this, "Role tidak cocok dengan akun ini!", Toast.LENGTH_LONG).show()
-                                    }
+                                val storedRole = document.getString("role")
+                                if (storedRole != null && storedRole == selectedRole) {
+
+                                    // ✅ Simpan status login agar tidak logout saat aplikasi ditutup
+                                    sharedPreferences.edit().putBoolean("isLoggedIn", true).apply()
+
+                                    Toast.makeText(this, "Login berhasil sebagai $storedRole", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this, DashboardActivity::class.java)
+                                    intent.putExtra("ROLE", storedRole)
+                                    startActivity(intent)
+                                    finish()
                                 } else {
                                     auth.signOut()
-                                    Toast.makeText(this, "Data pengguna tidak ditemukan", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this, "Role tidak cocok dengan akun ini!", Toast.LENGTH_LONG).show()
                                 }
                             }
                             .addOnFailureListener {

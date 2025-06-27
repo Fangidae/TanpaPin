@@ -1,5 +1,6 @@
 package com.example.dp3akbpenjadwalan
 
+import KegiatanModel
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -13,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dp3akbpenjadwalan.model.KegiatanModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +29,8 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var calendarView: CalendarView
     private lateinit var btnResetFilter: Button
+    private val role: String = "pegawai" // misalnya
+
 
 
     private var selectedDateFilter: String? = null
@@ -42,7 +44,7 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        setContentView(R.layout.dashboard)
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -81,11 +83,11 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_edit -> {
+            R.id.menu_Pengaturan -> {
                 startActivity(Intent(this, PengaturanAdminActivity::class.java))
                 true
             }
-            R.id.menu_delete -> {
+            R.id.menu_riwayat -> {
                 startActivity(Intent(this, RiwayatadminActivity::class.java))
                 true
             }
@@ -162,10 +164,12 @@ class DashboardActivity : AppCompatActivity() {
                 startActivity(intent)
             },
             onEditClick = editClick,
-            onDeleteClick = deleteClick
+            onDeleteClick = deleteClick,
+            role = userRole ?: "user" // <- FIX DI SINI
         )
         recyclerView.adapter = adapter
     }
+
 
     private fun loadDataFromFirestore() {
         val uid = currentUserUid ?: return
@@ -182,6 +186,7 @@ class DashboardActivity : AppCompatActivity() {
                 for (doc in result) {
                     val kegiatan = doc.toObject(KegiatanModel::class.java)
                     kegiatan.id = doc.id
+
                     kegiatanList.add(kegiatan)
                     allKegiatanList.add(kegiatan)
                 }
@@ -192,12 +197,13 @@ class DashboardActivity : AppCompatActivity() {
             }
     }
 
+
     private fun deleteKegiatan(kegiatan: KegiatanModel) {
-        val uid = currentUserUid ?: return
         val kegiatanId = kegiatan.id ?: return
+        val ownerUid = kegiatan.uid ?: return
 
         FirebaseFirestore.getInstance()
-            .collection("users").document(uid)
+            .collection("users").document(ownerUid)
             .collection("kegiatan").document(kegiatanId)
             .delete()
             .addOnSuccessListener {
@@ -210,6 +216,7 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.makeText(this, "Gagal menghapus data", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     // ... showAddKegiatanDialog dan filterKegiatan tetap tidak berubah
     private fun showAddKegiatanDialog(isEdit: Boolean = false, kegiatan: KegiatanModel? = null) {
@@ -301,11 +308,14 @@ class DashboardActivity : AppCompatActivity() {
                     "tempat" to tempat,
                     "tanggal" to tanggal,
                     "waktu" to waktu,
-                    "kategori" to kategori
+                    "kategori" to kategori,
+                    "uid" to uid
                 )
 
                 if (isEdit && kegiatan != null) {
-                    firestore.collection("users").document(uid)
+                    val ownerUid = kegiatan.uid ?: return@setOnClickListener
+
+                    firestore.collection("users").document(ownerUid)
                         .collection("kegiatan").document(kegiatan.id!!)
                         .set(kegiatanData)
                         .addOnSuccessListener {
@@ -316,18 +326,31 @@ class DashboardActivity : AppCompatActivity() {
                         .addOnFailureListener {
                             Toast.makeText(this, "Gagal memperbarui kegiatan", Toast.LENGTH_SHORT).show()
                         }
-                } else {
-                    firestore.collection("users").document(uid)
-                        .collection("kegiatan").add(kegiatanData)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Kegiatan ditambahkan", Toast.LENGTH_SHORT).show()
-                            loadDataFromFirestore()
-                            dialog.dismiss()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Gagal menambahkan kegiatan", Toast.LENGTH_SHORT).show()
-                        }
                 }
+                else {
+                val globalRef = firestore.collection("kegiatan").document()
+                val userRef = firestore.collection("users").document(uid)
+                    .collection("kegiatan").document(globalRef.id)
+
+                // Tambahkan ID-nya ke data juga
+                kegiatanData["id"] = globalRef.id
+                kegiatanData["uid"] = uid
+
+                // Simpan ke koleksi global
+                globalRef.set(kegiatanData)
+                    .addOnSuccessListener {
+                        // Simpan juga ke koleksi user
+                        userRef.set(kegiatanData)
+
+                        Toast.makeText(this, "Kegiatan ditambahkan", Toast.LENGTH_SHORT).show()
+                        loadDataFromFirestore()
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Gagal menambahkan kegiatan", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
             }
         }
 

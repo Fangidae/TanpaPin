@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewTentang"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#D7FAF1"
+    tools:context=".TentangaplikasiActivity">
+
+    <TextView
+        android:id="@+id/textTentangAplikasi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:lineSpacingExtra="6dp"
+        android:text="Memuat informasi..." />
+</ScrollView>
