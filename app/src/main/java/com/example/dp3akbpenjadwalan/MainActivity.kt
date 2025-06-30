@@ -1,5 +1,9 @@
 package com.example.dp3akbpenjadwalan
-
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.os.Build
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -104,4 +108,20 @@ class MainActivity : AppCompatActivity() {
                 }
         }
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Izin notifikasi diberikan", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Izin notifikasi ditolak", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 }

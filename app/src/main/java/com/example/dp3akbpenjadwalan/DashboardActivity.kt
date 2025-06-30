@@ -1,10 +1,22 @@
 package com.example.dp3akbpenjadwalan
 
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import KegiatanModel
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -12,12 +24,15 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
+
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -46,6 +61,22 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard)
 
+        // 👉 Tambahkan ini untuk Android 13+ (izin notifikasi)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        }
+
+
+
+
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = ""
@@ -56,6 +87,19 @@ class DashboardActivity : AppCompatActivity() {
         initViews()
         checkUserRole()
     }
+    //reques permisions
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 100) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Izin diberikan, aman
+            } else {
+                Toast.makeText(this, "Izin notifikasi ditolak. Notifikasi tidak bisa ditampilkan.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_admin, menu)
@@ -131,10 +175,16 @@ class DashboardActivity : AppCompatActivity() {
         userDocRef.get()
             .addOnSuccessListener { document ->
                 userRole = document.getString("role")
-                if (userRole == "user") {
+                val isAdmin = document.getBoolean("isAdmin") ?: false
+
+                if (!isAdmin) {
                     fabAdd.hide()
                 }
-                setupAdapter()
+
+                // Jika kamu ingin pakai peran spesifik juga
+                Log.d("RoleDebug", "Role: $userRole | IsAdmin: $isAdmin")
+
+                setupAdapter(isAdmin)
                 loadDataFromFirestore()
             }
             .addOnFailureListener {
@@ -142,12 +192,13 @@ class DashboardActivity : AppCompatActivity() {
             }
     }
 
-    private fun setupAdapter() {
+
+    private fun setupAdapter(isAdmin: Boolean) {
         val editClick: ((KegiatanModel) -> Unit)? =
-            if (userRole == "admin") { { kegiatan -> showAddKegiatanDialog(true, kegiatan) } } else null
+            if (isAdmin) { { kegiatan -> showAddKegiatanDialog(true, kegiatan) } } else null
 
         val deleteClick: ((KegiatanModel) -> Unit)? =
-            if (userRole == "admin") { { kegiatan -> deleteKegiatan(kegiatan) } } else null
+            if (isAdmin) { { kegiatan -> deleteKegiatan(kegiatan) } } else null
 
         adapter = KegiatanAdapter(
             context = this,
@@ -165,10 +216,11 @@ class DashboardActivity : AppCompatActivity() {
             },
             onEditClick = editClick,
             onDeleteClick = deleteClick,
-            role = userRole ?: "user" // <- FIX DI SINI
+            role = if (isAdmin) "admin" else "user" // kirimkan sebagai string ke adapter
         )
         recyclerView.adapter = adapter
     }
+
 
 
     private fun loadDataFromFirestore() {
@@ -342,6 +394,19 @@ class DashboardActivity : AppCompatActivity() {
                         // Simpan juga ke koleksi user
                         userRef.set(kegiatanData)
 
+                        // ✅ Tambahkan pemanggilan notifikasi di sini
+                        scheduleKegiatanReminder(this, KegiatanModel(
+                            id = globalRef.id,
+                            uid = uid,
+                            judul = judul,
+                            deskripsi = deskripsi,
+                            tempat = tempat,
+                            tanggal = tanggal,
+                            waktu = waktu,
+                            kategori = kategori
+                        ))
+
+
                         Toast.makeText(this, "Kegiatan ditambahkan", Toast.LENGTH_SHORT).show()
                         loadDataFromFirestore()
                         dialog.dismiss()
@@ -371,5 +436,44 @@ class DashboardActivity : AppCompatActivity() {
         }
         adapter.notifyDataSetChanged()
     }
+
+    private fun scheduleKegiatanReminder(context: Context, kegiatan: KegiatanModel) {
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = formatter.parse(kegiatan.tanggal)
+
+        date?.let {
+            val calendar = Calendar.getInstance().apply {
+                time = it
+                add(Calendar.DAY_OF_YEAR, -1) // Reminder 1 hari sebelumnya
+            }
+
+            val intent = Intent(context.applicationContext, KegiatanReminderReceiver::class.java).apply {
+                putExtra("judul", kegiatan.judul)
+                putExtra("deskripsi", kegiatan.deskripsi)
+                putExtra("tanggal", kegiatan.tanggal)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context.applicationContext,
+                kegiatan.id.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            alarmManager?.set(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+
+
+
+
+
+
 
 }

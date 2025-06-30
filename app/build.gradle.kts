@@ -5,11 +5,6 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
-android {
-    buildFeatures {
-        viewBinding = true
-    }
-}
 
 android {
     namespace = "com.example.dp3akbpenjadwalan"
@@ -33,6 +28,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {
@@ -67,4 +66,9 @@ dependencies {
     // Android Instrumentation Test
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //notifikasi
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
+
+
 }

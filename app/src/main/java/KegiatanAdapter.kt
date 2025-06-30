@@ -44,7 +44,7 @@ class KegiatanAdapter(
             itemView.setOnClickListener { onItemClick(item) }
 
             // Hanya tampilkan menu jika rolenya admin
-            if (role == "admin") {
+            if (role == "admin"){
                 ivMenu.visibility = View.VISIBLE
                 ivMenu.setOnClickListener { v ->
                     val popup = PopupMenu(context, v)

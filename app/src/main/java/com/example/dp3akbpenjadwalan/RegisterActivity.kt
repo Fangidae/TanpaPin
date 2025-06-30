@@ -73,10 +73,14 @@ class RegisterActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
 
+                        // Tentukan isAdmin berdasarkan role yang dipilih
+                        val isAdmin = role in listOf("Kabid PP", "Kabid PPA", "Kabid PUG", "Kabid KB", "Kepala UPTD") // tambahkan peran admin lainnya jika ada
+
                         val userMap = hashMapOf(
                             "email" to email,
                             "role" to role,
-                            "uid" to uid
+                            "uid" to uid,
+                            "isAdmin" to isAdmin  // ← disimpan sebagai Boolean true/false
                         )
 
                         // Simpan data user ke Firestore
