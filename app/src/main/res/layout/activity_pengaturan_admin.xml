@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="24dp"
     android:background="#D7FAF1"
     tools:context=".PengaturanAdminActivity">
@@ -26,49 +26,62 @@
             android:layout_gravity="center_horizontal"
             android:text="Pengaturan"
             android:textSize="24sp"
+            android:textColor="#174C7F"
             android:textStyle="bold"
             android:paddingBottom="12dp" />
-
     </LinearLayout>
 
-
-    <!-- keamanan -->
-
+    <!-- Email -->
     <TextView
         android:id="@+id/EMAIL"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="juan@gmail.com"
         android:textSize="14sp"
         android:drawableStart="@drawable/ic_email"
         android:drawablePadding="12dp"
         android:padding="10dp"
+        android:textColor="@color/black"
         android:layout_marginBottom="16dp" />
 
+    <!-- Ubah PIN -->
+    <TextView
+        android:id="@+id/ubahPin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ubah pin admin"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/ic_pin"
+        android:drawablePadding="12dp"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginBottom="16dp" />
 
-
-    <!-- tentang aplikasi -->
+    <!-- Tentang Aplikasi -->
     <TextView
         android:id="@+id/tentang"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tentang aplikasi"
         android:textSize="14sp"
         android:drawableStart="@drawable/ic_info"
         android:drawablePadding="12dp"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Logout -->
     <TextView
         android:id="@+id/LOGOUT"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout"
         android:textSize="14sp"
         android:drawableStart="@drawable/ic_logout"
         android:drawablePadding="12dp"
+        android:textColor="@color/black"
         android:padding="10dp" />
-
-
-
 
 </LinearLayout>
