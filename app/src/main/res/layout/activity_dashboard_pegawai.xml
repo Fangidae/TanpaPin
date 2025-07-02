@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:queryHint="Cari kegiatan..."
             android:background="@android:color/white"
             android:elevation="4dp"
+            app:queryHint="Cari kegiatan...."
             android:iconifiedByDefault="false"/>
 
         <!-- Tombol kategori dengan scroll horizontal -->
@@ -41,10 +41,21 @@
                 android:gravity="center_vertical">
 
                 <Button
+                    android:id="@+id/btnAllBidang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Semua"
+                    android:backgroundTint="#FFFFFF"
+                    android:layout_marginStart="16dp"
+                    android:textColor="#246455"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
                     android:id="@+id/btnUPTD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="UPTD"
+                    android:text="UPTD PPA"
                     android:backgroundTint="#FFFFFF"
                     android:layout_marginStart="16dp"
                     android:textColor="#246455"

@@ -15,12 +15,14 @@ class DetailActivity : AppCompatActivity() {
         val tanggal = intent.getStringExtra("tanggal")
         val waktu = intent.getStringExtra("waktu")
         val kategori = intent.getStringExtra("kategori")
+        val bidang = intent.getStringExtra("bidang")
 
         // Pasang data ke tampilan
-        findViewById<TextView>(R.id.tvDetailJudul).text = judul
-        findViewById<TextView>(R.id.tvDetailDeskripsi).text = deskripsi
+        findViewById<TextView>(R.id.tvDetailJudul).text = "Topik Kegiatan: $judul"
+        findViewById<TextView>(R.id.tvDetailDeskripsi).text = "Peserta: $deskripsi"
         findViewById<TextView>(R.id.tvDetailTanggal).text = "Tanggal: $tanggal"
         findViewById<TextView>(R.id.tvDetailWaktu).text = "Waktu: $waktu"
         findViewById<TextView>(R.id.tvDetailKategori).text = "Kategori: $kategori"
+        findViewById<TextView>(R.id.tvDetailBidang).text = "Bidang: $bidang"
     }
 }

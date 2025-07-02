@@ -131,10 +131,6 @@ class DashboardActivity : AppCompatActivity() {
                 startActivity(Intent(this, PengaturanAdminActivity::class.java))
                 true
             }
-            R.id.menu_riwayat -> {
-                startActivity(Intent(this, RiwayatadminActivity::class.java))
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -211,6 +207,7 @@ class DashboardActivity : AppCompatActivity() {
                     putExtra("tanggal", kegiatan.tanggal)
                     putExtra("waktu", kegiatan.waktu)
                     putExtra("kategori", kegiatan.kategori)
+                    putExtra("bidang", kegiatan.bidang)
                 }
                 startActivity(intent)
             },
@@ -254,20 +251,29 @@ class DashboardActivity : AppCompatActivity() {
         val kegiatanId = kegiatan.id ?: return
         val ownerUid = kegiatan.uid ?: return
 
-        FirebaseFirestore.getInstance()
-            .collection("users").document(ownerUid)
-            .collection("kegiatan").document(kegiatanId)
-            .delete()
+        val firestore = FirebaseFirestore.getInstance()
+        val userRef = firestore.collection("users").document(ownerUid).collection("kegiatan").document(kegiatanId)
+        val globalRef = firestore.collection("kegiatan").document(kegiatanId)
+
+        // Hapus dari kedua koleksi
+        userRef.delete()
             .addOnSuccessListener {
-                kegiatanList.remove(kegiatan)
-                allKegiatanList.remove(kegiatan)
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Kegiatan dihapus", Toast.LENGTH_SHORT).show()
+                globalRef.delete()
+                    .addOnSuccessListener {
+                        kegiatanList.remove(kegiatan)
+                        allKegiatanList.remove(kegiatan)
+                        adapter.notifyDataSetChanged()
+                        Toast.makeText(this, "Kegiatan dihapus", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Gagal menghapus dari koleksi global", Toast.LENGTH_SHORT).show()
+                    }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Gagal menghapus data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gagal menghapus dari koleksi user", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
     // ... showAddKegiatanDialog dan filterKegiatan tetap tidak berubah
@@ -284,6 +290,12 @@ class DashboardActivity : AppCompatActivity() {
         val kategoriList = arrayOf("Kegiatan Rutin", "Rapat", "Pelatihan", "Kunjungan")
         val kategoriAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kategoriList)
         spinnerKategori.adapter = kategoriAdapter
+
+// 🔽 Tambahkan Spinner Bidang di sini
+        val spinnerBidang = dialogView.findViewById<Spinner>(R.id.spinnerBidang)
+        val bidangList = arrayOf("PP", "PPA", "PUG", "KB", "UPTD PPA")
+        val bidangAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, bidangList)
+        spinnerBidang.adapter = bidangAdapter
 
         // Jika sedang edit, isi field dengan data kegiatan
         if (isEdit && kegiatan != null) {
@@ -343,6 +355,8 @@ class DashboardActivity : AppCompatActivity() {
                 val tanggal = etTanggal.text.toString().trim()
                 val waktu = etWaktu.text.toString().trim()
                 val kategori = spinnerKategori.selectedItem.toString().trim()
+                val bidang = spinnerBidang.selectedItem.toString().trim()
+
 
                 // Validasi
                 if (judul.isEmpty() || deskripsi.isEmpty() || tempat.isEmpty() ||
@@ -361,15 +375,22 @@ class DashboardActivity : AppCompatActivity() {
                     "tanggal" to tanggal,
                     "waktu" to waktu,
                     "kategori" to kategori,
+                    "bidang" to bidang,
                     "uid" to uid
                 )
 
                 if (isEdit && kegiatan != null) {
                     val ownerUid = kegiatan.uid ?: return@setOnClickListener
+                    val kegiatanId = kegiatan.id ?: return@setOnClickListener
 
-                    firestore.collection("users").document(ownerUid)
-                        .collection("kegiatan").document(kegiatan.id!!)
-                        .set(kegiatanData)
+                    val userRef = firestore.collection("users").document(ownerUid)
+                        .collection("kegiatan").document(kegiatanId)
+
+                    val globalRef = firestore.collection("kegiatan").document(kegiatanId)
+
+                    // Update kedua lokasi: user dan global
+                    userRef.set(kegiatanData)
+                    globalRef.set(kegiatanData)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Kegiatan diperbarui", Toast.LENGTH_SHORT).show()
                             loadDataFromFirestore()
@@ -379,6 +400,7 @@ class DashboardActivity : AppCompatActivity() {
                             Toast.makeText(this, "Gagal memperbarui kegiatan", Toast.LENGTH_SHORT).show()
                         }
                 }
+
                 else {
                 val globalRef = firestore.collection("kegiatan").document()
                 val userRef = firestore.collection("users").document(uid)

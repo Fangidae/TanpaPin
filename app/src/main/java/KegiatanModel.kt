@@ -11,6 +11,8 @@ data class KegiatanModel(
     var tempat: String = "",
     var tanggal: String = "",
     var waktu: String = "",
-    var kategori: String = ""
+    var kategori: String = "",
+    var bidang: String? = null
+
 ) : Parcelable
 

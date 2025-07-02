@@ -30,6 +30,8 @@ class KegiatanAdapter(
         private val waktu = itemView.findViewById<TextView>(R.id.tvWaktu)
         private val kategori = itemView.findViewById<TextView>(R.id.tvKategori)
         private val ivMenu = itemView.findViewById<ImageView>(R.id.ivMenu)
+        private val bidang = itemView.findViewById<TextView>(R.id.tvBidang)
+
 
         fun bind(item: KegiatanModel) {
             Log.d("KegiatanAdapter", "Role: $role")
@@ -40,6 +42,8 @@ class KegiatanAdapter(
             tanggal.text = item.tanggal
             waktu.text = item.waktu
             kategori.text = item.kategori
+            bidang.text = item.bidang
+
 
             itemView.setOnClickListener { onItemClick(item) }
 

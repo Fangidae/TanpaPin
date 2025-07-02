@@ -12,7 +12,7 @@
 
         <!-- Judul -->
         <TextView
-            android:text="Judul Kegiatan"
+            android:text="Topik Kegiatan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -27,9 +27,9 @@
             android:inputType="textCapWords"
             android:imeOptions="actionNext" />
 
-        <!-- Deskripsi -->
+        <!-- Peserta -->
         <TextView
-            android:text="Deskripsi"
+            android:text="Peserta"
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 
         <EditText
             android:id="@+id/etDeskripsi"
-            android:hint="Tulis deskripsi kegiatan"
+            android:hint="Tulis Peserta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
@@ -115,6 +115,21 @@
 
         <Spinner
             android:id="@+id/spinnerKategori"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Bidang -->
+        <TextView
+            android:text="Bidang"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <Spinner
+            android:id="@+id/spinnerBidang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

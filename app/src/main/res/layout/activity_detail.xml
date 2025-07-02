@@ -64,5 +64,12 @@
             android:text="Kategori: Penting"
             android:textSize="14sp"
             android:textColor="#FF5722" />
+        <TextView
+            android:id="@+id/tvDetailBidang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bidang: Penting"
+            android:textSize="14sp"
+            android:textColor="#12E4B1" />
     </LinearLayout>
 </ScrollView>

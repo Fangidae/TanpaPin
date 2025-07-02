@@ -17,12 +17,6 @@
         app:showAsAction="always"
         app:iconTint="@color/black"/>
 
-
-    <item
-        android:id="@+id/menu_riwayat"
-        android:title="Riwayat Kegiatan"
-        app:showAsAction="never" />
-
     <item
         android:id="@+id/menu_Pengaturan"
         android:title="Pengaturan"
