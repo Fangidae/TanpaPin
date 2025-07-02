@@ -8,6 +8,10 @@
         <!-- Tambahkan ini untuk menu popup -->
         <item name="popupMenuStyle">@style/PopupMenuStyle</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+
+        <!-- ✅ Tambahan agar status bar sama seperti background -->
+        <item name="android:statusBarColor">@color/sepakat_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.DP3AKBPENJADWALAN" parent="Base.Theme.DP3AKBPENJADWALAN" />

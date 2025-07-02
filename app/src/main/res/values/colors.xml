@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#174C7F</color>
+    <color name="sepakat_bg">#D7FAF1</color> <!-- ganti sesuai warna aslinya -->
 </resources>

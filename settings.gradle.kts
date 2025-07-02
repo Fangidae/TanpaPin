@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DP3AKB(PENJADWALAN)"
+rootProject.name = "SEPAKAT DP3AKB PROV. PAPUA"
 include(":app")
  
