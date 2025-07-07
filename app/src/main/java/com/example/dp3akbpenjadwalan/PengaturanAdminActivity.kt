@@ -47,14 +47,10 @@ class PengaturanAdminActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Tombol Logout
+        // Tombol Logout → diperbaiki untuk menampilkan dialog konfirmasi
         val logout = findViewById<TextView>(R.id.LOGOUT)
         logout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            val preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE)
-            preferences.edit().clear().apply()
-            startActivity(Intent(this, TampilanDepanActivity::class.java))
-            finish()
+            showLogoutDialog() // Memanggil dialog konfirmasi logout
         }
 
         // Tombol Ubah PIN Admin
@@ -64,6 +60,7 @@ class PengaturanAdminActivity : AppCompatActivity() {
         }
     }
 
+    // Fungsi untuk menampilkan dialog konfirmasi logout
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Konfirmasi Logout")
@@ -77,7 +74,7 @@ class PengaturanAdminActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().signOut()
         val preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE)
         preferences.edit().putBoolean("isLoggedIn", false).apply()
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, TampilanDepanActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

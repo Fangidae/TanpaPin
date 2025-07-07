@@ -11,13 +11,6 @@
         app:iconTint="@color/black" />
 
     <item
-        android:id="@+id/menu_notifikasi"
-        android:icon="@drawable/ic_notif"
-        android:title="Notifikasi"
-        app:showAsAction="always"
-        app:iconTint="@color/black"/>
-
-    <item
         android:id="@+id/menu_Pengaturan"
         android:title="Pengaturan"
         app:showAsAction="never" />

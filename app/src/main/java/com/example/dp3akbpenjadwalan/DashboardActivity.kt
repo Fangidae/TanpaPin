@@ -36,24 +36,25 @@ import java.util.*
 
 class DashboardActivity : AppCompatActivity() {
 
+    // Daftar kegiatan yang akan ditampilkan
     private lateinit var kegiatanList: ArrayList<KegiatanModel>
-    private lateinit var allKegiatanList: ArrayList<KegiatanModel>
+    private lateinit var allKegiatanList: ArrayList<KegiatanModel> // Untuk kebutuhan filter
+
+    // Adapter untuk RecyclerView
     private lateinit var adapter: KegiatanAdapter
 
+    // Komponen UI
     private lateinit var recyclerView: RecyclerView
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var calendarView: CalendarView
     private lateinit var btnResetFilter: Button
-    private val role: String = "pegawai" // misalnya
 
-
-
+    // Filter dan user role
+    private val role: String = "pegawai"
     private var selectedDateFilter: String? = null
     private var searchQueryFilter: String? = null
-
     private var userRole: String? = null
     private var currentUserUid: String? = null
-
     private var menuSearchView: SearchView? = null
 
 
@@ -61,7 +62,7 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard)
 
-        // 👉 Tambahkan ini untuk Android 13+ (izin notifikasi)
+        //  untuk Android 13+ (izin notifikasi)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
@@ -74,20 +75,20 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-
-
-
+        // Atur Toolbar
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = ""
 
+        // Inisialisasi list
         kegiatanList = arrayListOf()
         allKegiatanList = arrayListOf()
 
+        // Inisialisasi tampilan & cek role user
         initViews()
         checkUserRole()
     }
-    //reques permisions
+    // Callback saat permintaan izin selesai
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -101,12 +102,14 @@ class DashboardActivity : AppCompatActivity() {
     }
 
 
+    // Menambahkan menu (search dan pengaturan)
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_admin, menu)
 
         val searchItem = menu?.findItem(R.id.menu_search)
         menuSearchView = searchItem?.actionView as? SearchView
 
+        // Atur listener untuk search
         menuSearchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchQueryFilter = query?.takeIf { it.isNotEmpty() }
@@ -124,7 +127,7 @@ class DashboardActivity : AppCompatActivity() {
         return true
     }
 
-
+    // Handle klik item menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_Pengaturan -> {
@@ -135,6 +138,7 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    // Inisialisasi semua view di layout
     private fun initViews() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -143,14 +147,15 @@ class DashboardActivity : AppCompatActivity() {
         calendarView = findViewById(R.id.calendarView)
         btnResetFilter = findViewById(R.id.btnResetFilter)
 
-
+        // Tambah kegiatan
         fabAdd.setOnClickListener { showAddKegiatanDialog() }
 
+        // Filter berdasarkan tanggal
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDateFilter = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
             filterKegiatan()
         }
-
+        // tombol Reset semua filter
         btnResetFilter.setOnClickListener {
             selectedDateFilter = null
             searchQueryFilter = null
@@ -162,7 +167,7 @@ class DashboardActivity : AppCompatActivity() {
 
 
     }
-
+    // Mengecek apakah user adalah admin atau bukan
     private fun checkUserRole() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         currentUserUid = uid
@@ -174,10 +179,10 @@ class DashboardActivity : AppCompatActivity() {
                 val isAdmin = document.getBoolean("isAdmin") ?: false
 
                 if (!isAdmin) {
-                    fabAdd.hide()
+                    fabAdd.hide() // Sembunyikan tombol tambah jika bukan admin
                 }
 
-                // Jika kamu ingin pakai peran spesifik juga
+                // Jika ingin pakai peran spesifik juga
                 Log.d("RoleDebug", "Role: $userRole | IsAdmin: $isAdmin")
 
                 setupAdapter(isAdmin)
@@ -188,7 +193,7 @@ class DashboardActivity : AppCompatActivity() {
             }
     }
 
-
+    // Inisialisasi adapter untuk RecyclerView
     private fun setupAdapter(isAdmin: Boolean) {
         val editClick: ((KegiatanModel) -> Unit)? =
             if (isAdmin) { { kegiatan -> showAddKegiatanDialog(true, kegiatan) } } else null
@@ -200,6 +205,7 @@ class DashboardActivity : AppCompatActivity() {
             context = this,
             list = kegiatanList,
             onItemClick = { kegiatan ->
+                // Buka DetailActivity saat item diklik
                 val intent = Intent(this, DetailActivity::class.java).apply {
                     putExtra("judul", kegiatan.judul)
                     putExtra("deskripsi", kegiatan.deskripsi)
@@ -218,8 +224,7 @@ class DashboardActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-
-
+    // Ambil data kegiatan dari Firestore
     private fun loadDataFromFirestore() {
         val uid = currentUserUid ?: return
         val kegiatanRef = if (userRole == "admin") {
@@ -246,7 +251,7 @@ class DashboardActivity : AppCompatActivity() {
             }
     }
 
-
+    // Menghapus kegiatan dari Firestore
     private fun deleteKegiatan(kegiatan: KegiatanModel) {
         val kegiatanId = kegiatan.id ?: return
         val ownerUid = kegiatan.uid ?: return
@@ -276,9 +281,10 @@ class DashboardActivity : AppCompatActivity() {
 
 
 
-    // ... showAddKegiatanDialog dan filterKegiatan tetap tidak berubah
+    // Menampilkan dialog tambah/edit kegiatan
     private fun showAddKegiatanDialog(isEdit: Boolean = false, kegiatan: KegiatanModel? = null) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_kegiatan, null)
+        // Ambil referensi ke input dan spinner
         val etJudul = dialogView.findViewById<EditText>(R.id.etJudul)
         val etDeskripsi = dialogView.findViewById<EditText>(R.id.etDeskripsi)
         val etTempat = dialogView.findViewById<EditText>(R.id.etTempat)
@@ -286,18 +292,18 @@ class DashboardActivity : AppCompatActivity() {
         val etWaktu = dialogView.findViewById<EditText>(R.id.etWaktu)
         val spinnerKategori = dialogView.findViewById<Spinner>(R.id.spinnerKategori)
 
-        // Siapkan daftar kategori
+        // Isi spinner kategori & bidang
         val kategoriList = arrayOf("Kegiatan Rutin", "Rapat", "Pelatihan", "Kunjungan")
         val kategoriAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kategoriList)
         spinnerKategori.adapter = kategoriAdapter
 
-// 🔽 Tambahkan Spinner Bidang di sini
+       // Spinner Bidang
         val spinnerBidang = dialogView.findViewById<Spinner>(R.id.spinnerBidang)
         val bidangList = arrayOf("PP", "PPA", "PUG", "KB", "UPTD PPA")
         val bidangAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, bidangList)
         spinnerBidang.adapter = bidangAdapter
 
-        // Jika sedang edit, isi field dengan data kegiatan
+        // Jika mode edit, tampilkan data sebelumnya
         if (isEdit && kegiatan != null) {
             etJudul.setText(kegiatan.judul)
             etDeskripsi.setText(kegiatan.deskripsi)
@@ -308,7 +314,7 @@ class DashboardActivity : AppCompatActivity() {
             if (selectedIndex >= 0) spinnerKategori.setSelection(selectedIndex)
         }
 
-        // Date picker untuk tanggal
+        // Pilih tanggal dan waktu menggunakan picker
         etTanggal.setOnClickListener {
             val calendar = Calendar.getInstance()
             val datePicker = DatePickerDialog(
@@ -338,7 +344,7 @@ class DashboardActivity : AppCompatActivity() {
             timePicker.show()
         }
 
-        // Buat dialog
+        // Buat dan tampilkan dialog
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setTitle(if (isEdit) "Edit Kegiatan" else "Tambah Kegiatan")
@@ -349,6 +355,7 @@ class DashboardActivity : AppCompatActivity() {
         dialog.setOnShowListener {
             val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             button.setOnClickListener {
+                // Ambil data input
                 val judul = etJudul.text.toString().trim()
                 val deskripsi = etDeskripsi.text.toString().trim()
                 val tempat = etTempat.text.toString().trim()
@@ -358,7 +365,7 @@ class DashboardActivity : AppCompatActivity() {
                 val bidang = spinnerBidang.selectedItem.toString().trim()
 
 
-                // Validasi
+                // Validasi input
                 if (judul.isEmpty() || deskripsi.isEmpty() || tempat.isEmpty() ||
                     tanggal.isEmpty() || waktu.isEmpty() || kategori.isEmpty()
                 ) {
@@ -378,7 +385,7 @@ class DashboardActivity : AppCompatActivity() {
                     "bidang" to bidang,
                     "uid" to uid
                 )
-
+                // Mode edit: update data lama
                 if (isEdit && kegiatan != null) {
                     val ownerUid = kegiatan.uid ?: return@setOnClickListener
                     val kegiatanId = kegiatan.id ?: return@setOnClickListener
@@ -402,6 +409,7 @@ class DashboardActivity : AppCompatActivity() {
                 }
 
                 else {
+                    // Tambah kegiatan baru
                 val globalRef = firestore.collection("kegiatan").document()
                 val userRef = firestore.collection("users").document(uid)
                     .collection("kegiatan").document(globalRef.id)
@@ -416,7 +424,7 @@ class DashboardActivity : AppCompatActivity() {
                         // Simpan juga ke koleksi user
                         userRef.set(kegiatanData)
 
-                        // ✅ Tambahkan pemanggilan notifikasi di sini
+                        // Tambahkan pemanggilan notifikasi di sini
                         scheduleKegiatanReminder(this, KegiatanModel(
                             id = globalRef.id,
                             uid = uid,
@@ -444,6 +452,7 @@ class DashboardActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    // Filter kegiatan berdasarkan tanggal dan pencarian
     private fun filterKegiatan() {
         kegiatanList.clear()
         for (kegiatan in allKegiatanList) {
@@ -458,7 +467,7 @@ class DashboardActivity : AppCompatActivity() {
         }
         adapter.notifyDataSetChanged()
     }
-
+    // Jadwalkan pengingat kegiatan (notifikasi)
     private fun scheduleKegiatanReminder(context: Context, kegiatan: KegiatanModel) {
         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val date = formatter.parse(kegiatan.tanggal)

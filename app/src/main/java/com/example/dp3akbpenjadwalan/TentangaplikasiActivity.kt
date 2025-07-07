@@ -27,9 +27,7 @@ class TentangaplikasiActivity : AppCompatActivity() {
             
             Fitur Utama:
             - Penjadwalan kegiatan dinas
-            - Notifikasi kegiatan
             - Manajemen akun pengguna
-            - Riwayat dan pengingat
             
             Dikembangkan oleh: Grace Pananggung, Juan Fangidae, Rahmat Hidayah
             Email pengembang: support@sepakat.com

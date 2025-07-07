@@ -9,17 +9,19 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        // Ambil data dari intent
+        //  Ambil data dari intent yang dikirim dari activity sebelumnya
         val judul = intent.getStringExtra("judul")
         val deskripsi = intent.getStringExtra("deskripsi")
+        val tempat = intent.getStringExtra("tempat")
         val tanggal = intent.getStringExtra("tanggal")
         val waktu = intent.getStringExtra("waktu")
         val kategori = intent.getStringExtra("kategori")
         val bidang = intent.getStringExtra("bidang")
 
-        // Pasang data ke tampilan
+        // Tampilkan data ke komponen TextView di layout
         findViewById<TextView>(R.id.tvDetailJudul).text = "Topik Kegiatan: $judul"
         findViewById<TextView>(R.id.tvDetailDeskripsi).text = "Peserta: $deskripsi"
+        findViewById<TextView>(R.id.tvDetailTempat).text = "Tempat: $tempat"
         findViewById<TextView>(R.id.tvDetailTanggal).text = "Tanggal: $tanggal"
         findViewById<TextView>(R.id.tvDetailWaktu).text = "Waktu: $waktu"
         findViewById<TextView>(R.id.tvDetailKategori).text = "Kategori: $kategori"
