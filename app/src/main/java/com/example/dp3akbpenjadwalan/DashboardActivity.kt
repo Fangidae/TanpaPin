@@ -299,9 +299,21 @@ class DashboardActivity : AppCompatActivity() {
 
        // Spinner Bidang
         val spinnerBidang = dialogView.findViewById<Spinner>(R.id.spinnerBidang)
+        // Batasi pilihan bidang sesuai role admin
         val bidangList = arrayOf("PP", "PPA", "PUG", "KB", "UPTD PPA")
         val bidangAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, bidangList)
         spinnerBidang.adapter = bidangAdapter
+
+        // Jika userRole sesuai salah satu bidang, nonaktifkan pilihan lain
+        userRole?.let { role ->
+            val bidangDariRole = role.replace("Kabid ", "").trim() // contoh: "Kabid PUG" -> "PUG"
+            if (bidangDariRole in bidangList) {
+                val index = bidangList.indexOf(bidangDariRole)
+                spinnerBidang.setSelection(index)
+                spinnerBidang.isEnabled = false
+            }
+        }
+
 
         // Jika mode edit, tampilkan data sebelumnya
         if (isEdit && kegiatan != null) {

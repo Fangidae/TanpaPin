@@ -44,21 +44,6 @@
         android:textColor="@color/black"
         android:layout_marginBottom="16dp" />
 
-    <!-- Ubah PIN -->
-    <TextView
-        android:id="@+id/ubahPin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ubah pin admin"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:drawableStart="@drawable/ic_pin"
-        android:drawablePadding="12dp"
-        android:padding="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginBottom="16dp" />
-
     <!-- Tentang Aplikasi -->
     <TextView
         android:id="@+id/tentang"
