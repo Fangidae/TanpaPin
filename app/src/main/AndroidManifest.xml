@@ -19,12 +19,6 @@
             android:name=".TentangaplikasiActivity"
             android:exported="false" />
         <activity
-            android:name=".RiwayatpegawaiActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RiwayatadminActivity"
-            android:exported="false" />
-        <activity
             android:name=".TampilanDepanActivity"
             android:exported="true"> <!-- ✅ Ganti exported jadi true -->
             <intent-filter>
@@ -33,9 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PengaturanPegawaiActivity"
-            android:exported="false" />
         <activity
             android:name=".PengaturanAdminActivity"
             android:exported="false" />
